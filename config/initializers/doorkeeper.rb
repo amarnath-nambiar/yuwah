@@ -359,7 +359,7 @@ Doorkeeper.configure do
   #
   # grant_flows %w[authorization_code client_credentials]
   # enable password grant
-  grant_flows %w[password]
+  grant_flows %w[password client_credentials]
 
   # Allows to customize OAuth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
