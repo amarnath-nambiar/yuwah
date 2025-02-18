@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+
+  resources :courses
+
+  resources :colleges do
+    collection do
+      get 'search'
+    end
+  end
+
   use_doorkeeper do
     skip_controllers :authorizations, :applications, :authorized_applications
   end

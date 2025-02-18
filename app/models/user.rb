@@ -7,6 +7,7 @@ class User < ApplicationRecord
   validate :password_complexity
   validates :email, presence: true
 
+  has_one_attached :profile_picture
   def password_complexity
     return if password.blank? || password =~ /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
 

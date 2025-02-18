@@ -361,6 +361,10 @@ Doorkeeper.configure do
   # enable password grant
   grant_flows %w[password client_credentials]
 
+
+  # Skip client authentication for password grant
+  skip_client_authentication_for_password_grant true
+
   # Allows to customize OAuth grant flows that +each+ application support.
   # You can configure a custom block (or use a class respond to `#call`) that must
   # return `true` in case Application instance supports requested OAuth grant flow
