@@ -29,8 +29,19 @@ Rails.application.configure do
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
   # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
 
+  config.action_mailer.delivery_method = :aws_sdk
+  config.action_mailer.aws_sdk_settings = {
+    credentials: Aws::Credentials.new(
+      Rails.application.credentials.dig(:aws, :access_key_id),
+      Rails.application.credentials.dig(:aws, :secret_access_key)
+    ),
+    region: Rails.application.credentials.dig(:aws, :region)
+  }
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  config.active_storage.service = :amazon
+
+  config.assets.compile = true
 
   # Mount Action Cable outside main process or domain.
   # config.action_cable.mount_path = nil
