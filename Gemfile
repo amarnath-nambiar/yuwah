@@ -13,9 +13,13 @@ gem "puma", ">= 5.0"
 
 gem 'devise'
 
+gem 'aws-sdk-s3'
+
+gem 'aws-sdk-ses'
+
 gem 'doorkeeper'
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem "jbuilder"
+
+gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
@@ -44,6 +48,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'mailcatcher'
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
