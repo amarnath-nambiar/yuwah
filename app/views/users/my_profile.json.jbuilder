@@ -1,0 +1,10 @@
+json.id @user.id
+json.first_name @user.first_name
+json.last_name @user.last_name
+json.email @user.email
+json.phone @user.phone
+json.headline @user.headline
+json.about @user.about
+json.city @user.city
+json.type @user.type
+json.profile_picture_url profile_picture_url(@user)

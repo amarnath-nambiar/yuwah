@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
-  # before_action :doorkeeper_authorize!
-  # skip_before_action :doorkeeper_authorize!, only: %i[create]
+  before_action :doorkeeper_authorize!
+  skip_before_action :doorkeeper_authorize!, only: %i[create]
   before_action :set_user, only: %i[ show update destroy ]
+  include UsersHelper
 
   # GET /users
   def index
@@ -10,11 +11,12 @@ class UsersController < ApplicationController
     render json: @users
   end
 
+  def my_profile
+    @user = User.find(doorkeeper_token.resource_owner_id)
+  end
+
   # GET /users/1
   def show
-    @profile_picture_url = url_for(@user.profile_picture) if @user.profile_picture.attached?
-    data = @user.as_json
-    render json: data.merge(profile_picture_url: @profile_picture_url)
   end
 
   # POST /users
@@ -34,16 +36,29 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(update_user_params)
-      render json: @user
+    if doorkeeper_token.resource_owner_id == @user.id
+      if @user.update(update_user_params)
+        render json: @user
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: { error: 'You are not authorized to perform this action' }, status: 403
     end
+
   end
 
   # DELETE /users/1
   def destroy
-    @user.destroy!
+    if doorkeeper_token.resource_owner_id == @user.id
+      if @user.destroy
+        render json: { message: 'User deleted successfully' }, status: 200
+      else
+        render json: { error: 'An error occurred while deleting the user' }, status: 500
+      end
+    else
+      render json: { error: 'You are not authorized to perform this action' }, status: 403
+    end
   end
 
   private
@@ -54,10 +69,10 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def create_user_params
-      params.permit(:first_name, :last_name, :email, :phone, :headline, :about, :city, :type, :password, :profile_picture)
+      params.require(:user).permit(:first_name, :last_name, :email, :phone, :headline, :about, :city, :type, :password, :profile_picture)
     end
 
     def update_user_params
-      params.require(:user).permit(:first_name, :last_name, :phone, :headline, :about, :city, :type, :profile_picture)
+      params.require(:user).permit(:first_name, :last_name, :phone, :headline, :about, :city, :profile_picture)
     end
 end
